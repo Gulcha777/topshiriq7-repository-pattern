@@ -1,0 +1,27 @@
+digraph arch {
+  graph [rankdir=TB, nodesep=0.45, ranksep=0.55, pad=0.3, bgcolor="white"];
+  node  [shape=box, style="filled,rounded", fontname="DejaVu Sans", fontsize=11, color="#333333", penwidth=1.2];
+  edge  [fontname="DejaVu Sans", fontsize=10, color="#333333"];
+
+  svc [label="Servis qatlami\n(OrderService, AccountService,\nAuthService, ProductService)", fillcolor="#C6E0B4"];
+  uow [label="UnitOfWork\n(tranzaksiya chegarasi: commit / rollback)", fillcolor="#FFE699"];
+  iface [label="<<interface>>\nIRepository[T, ID]\ncreate, get_by_id, get_all, update, delete", fillcolor="#FFFFFF", style="filled,rounded,bold"];
+  sa [label="SqlAlchemyRepository\n(ORM)", fillcolor="#F8CBAD"];
+  mem [label="InMemoryRepository\n(testlar uchun)", fillcolor="#F8CBAD"];
+  orm [label="SQLAlchemy ORM / Session", fillcolor="#E7E6E6"];
+  db [label="PostgreSQL / SQLite", shape=cylinder, fillcolor="#E7E6E6"];
+  cache [label="ProductCache\n(cache-aside, TTL)", fillcolor="#FFE699"];
+  redis [label="Redis", shape=cylinder, fillcolor="#E7E6E6"];
+  pw [label="PasswordService\n(Argon2)", fillcolor="#FFE699"];
+
+  svc -> uow [label=" uow.users, uow.products ..."];
+  uow -> iface [label=" repositorylar"];
+  sa -> iface [arrowhead=empty, style=dashed, label=" implements"];
+  mem -> iface [arrowhead=empty, style=dashed, label=" implements"];
+  sa -> orm;
+  orm -> db;
+  svc -> cache;
+  cache -> redis;
+  svc -> pw;
+  {rank=same; sa; mem}
+}
